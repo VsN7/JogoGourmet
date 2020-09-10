@@ -14,7 +14,6 @@ public class PratoController{
     private String pratoEscolhido = "";
     private String caracteristica = "";
     private List<Prato> pratos;
-    private Random gerador;
     private Prato prato;
     private int resposta;
     
@@ -22,7 +21,6 @@ public class PratoController{
         pratos = new ArrayList<>();
         pratos.add(new Prato("lasanha", "massa"));
         prato = new Prato();
-        gerador = new Random();
     }
     
     public void adicionarPrato(String pratoEscolhido, String caracteristica){
@@ -38,26 +36,18 @@ public class PratoController{
         return "O prato que você pensou é um(a): "+pratoEscolhido+"?";
     }
     
-    public String adivinhaCaracteristica(){
-        return pratos.get(gerador.nextInt(pratos.size())).getCaracteristica();
-    }
-    
     //Construção das interações entre o algoritimo e o usuário
     
     public void menuJogo(){
-        int validaInicio = 0;
-        int continuar = 9;
-        while(continuar != 0){
-            this.perguntasRepetidas();
-        }
+        this.perguntasRepetidas();
     }
     
-    public void perguntasPoucoRepetidas(){
+    public void perguntasPoucoRepetidas(String tipoPrato){
         pratoEscolhido = JOptionPane.showInputDialog("Qual prato você pensou?");
         if(pratoEscolhido == null) {
             System.exit(0);
         }
-        caracteristica = JOptionPane.showInputDialog(pratoEscolhido+" é _____ mas Bolo de Chocolate não");
+        caracteristica = JOptionPane.showInputDialog(pratoEscolhido+" é _____ mas "+tipoPrato+" não");
         if(caracteristica == null) {
             System.exit(0);
         }
@@ -65,26 +55,47 @@ public class PratoController{
         this.perguntasRepetidas();
     }
     
-    public void perguntasRepetidas(){
+    private void perguntasRepetidas(){
         JOptionPane.showMessageDialog(null, "Pense em um prato que gosta", "Aviso", JOptionPane.INFORMATION_MESSAGE, null);
-        caracteristica = adivinhaCaracteristica();
-        resposta = JOptionPane.showOptionDialog(null, "O prato que você pensou é "+caracteristica+"?" ,"Pergunta ", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE,null, options,options[0]);
-        if(resposta == JOptionPane.YES_OPTION){
-            resposta = JOptionPane.showOptionDialog(null, filtroPratos(caracteristica),"Pergunta ", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE,null, options,options[0]);
-            if(resposta == JOptionPane.YES_OPTION){
-                JOptionPane.showMessageDialog(null, "Acertei!", "Sucesso", JOptionPane.INFORMATION_MESSAGE, null);
-                resposta = JOptionPane.showOptionDialog(null, "Quer continuar jogando?","Pergunta ", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE,null, options,options[0]);
-                if(resposta == JOptionPane.NO_OPTION){
-                    JOptionPane.showMessageDialog(null, "Até logo!", "Tchau", JOptionPane.INFORMATION_MESSAGE, null);
-                    System.exit(0);
-                }else{
-                    this.perguntasRepetidas();
-                }
-            }else{
-                this.perguntasPoucoRepetidas();
+        for(Prato prato : pratos) {
+            resposta = JOptionPane.showOptionDialog(null, "O prato que você pensou é "+prato.getCaracteristica()+"?" ,"Pergunta ", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE,null, options,options[0]);
+            if (prato == pratos.get(pratos.size()-1) && resposta == JOptionPane.NO_OPTION){
+                perguntasBoloDeChocolate();
             }
-        }else{
-            this.perguntasPoucoRepetidas();
+            if(resposta == JOptionPane.YES_OPTION){
+                resposta = JOptionPane.showOptionDialog(null, "O prato que você pensou é um(a): "+prato.getPrato()+"?","Pergunta ", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE,null, options,options[0]);
+                if(resposta == JOptionPane.YES_OPTION){
+                    JOptionPane.showMessageDialog(null, "Acertei!", "Sucesso", JOptionPane.INFORMATION_MESSAGE, null);
+                    resposta = JOptionPane.showOptionDialog(null, "Quer continuar jogando?","Pergunta ", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE,null, options,options[0]);
+                    if(resposta == JOptionPane.NO_OPTION){
+                        JOptionPane.showMessageDialog(null, "Até logo!", "Tchau", JOptionPane.INFORMATION_MESSAGE, null);
+                        System.exit(0);
+                    }else{
+                        this.perguntasRepetidas();
+                    }
+                } else if (prato == pratos.get(pratos.size()-1)){
+                    this.perguntasPoucoRepetidas(prato.getPrato());
+                }
+            } else if (prato == pratos.get(pratos.size()-1)){
+                perguntasRepetidas();
+            }
         }
     }
+    
+    public void perguntasBoloDeChocolate() {
+        resposta = JOptionPane.showOptionDialog(null, "O prato que você pensou é Bolo De Chocolate?" ,"Pergunta ", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE,null, options,options[0]);
+        if(resposta == JOptionPane.YES_OPTION){
+            JOptionPane.showMessageDialog(null, "Acertei!", "Sucesso", JOptionPane.INFORMATION_MESSAGE, null);
+            resposta = JOptionPane.showOptionDialog(null, "Quer continuar jogando?","Pergunta ", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE,null, options,options[0]);
+            if(resposta == JOptionPane.NO_OPTION){
+                JOptionPane.showMessageDialog(null, "Até logo!", "Tchau", JOptionPane.INFORMATION_MESSAGE, null);
+                System.exit(0);
+            }else{
+                this.perguntasRepetidas();
+            }
+        } else {
+            this.perguntasPoucoRepetidas("Bolo De Chocolate");
+        }
+    }
+    
 }
