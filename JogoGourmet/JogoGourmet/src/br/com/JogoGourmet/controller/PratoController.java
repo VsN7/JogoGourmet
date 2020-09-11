@@ -13,7 +13,7 @@ public class PratoController{
     private Prato prato;
     
     public PratoController(){
-        prato = (new Prato("massa"));
+        prato = (new Prato("Massa"));
         prato.setEsquerdo(new Prato("Lazanha"));
         prato.setDireito(new Prato("Bolo De Chocolate"));
         
