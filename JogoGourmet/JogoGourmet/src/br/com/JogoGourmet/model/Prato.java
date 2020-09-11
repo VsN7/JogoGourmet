@@ -1,39 +1,47 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package br.com.JogoGourmet.model;
+
+import java.util.List;
+
 /**
  *
  * @author Vitor
  */
-public class Prato{
+public class Prato {
     
-    private String prato;
-    
-    private String caracteristica;
-    
-    public Prato(){
-        
+    private Prato esquerdo;
+    private Prato direito;
+    private String atributo;
+
+    public Prato(String atributo) {
+        this.atributo = atributo;
     }
 
-    public Prato(String prato, String caracteristica) {
-        this.prato = prato;
-        this.caracteristica = caracteristica;
-    }
-    
-    
-
-    public String getPrato() {
-        return prato;
+    public Prato getEsquerdo() {
+        return esquerdo;
     }
 
-    public void setPrato(String prato) {
-        this.prato = prato;
+    public void setEsquerdo(Prato esquerdo) {
+        this.esquerdo = esquerdo;
     }
 
-    public String getCaracteristica() {
-        return caracteristica;
+    public Prato getDireito() {
+        return direito;
     }
 
-    public void setCaracteristica(String caracteristica) {
-        this.caracteristica = caracteristica;
+    public void setDireito(Prato direito) {
+        this.direito = direito;
     }
-    
+
+    public String getAtributo() {
+        return atributo;
+    }
+
+    public void setAtributo(String atributo) {
+        this.atributo = atributo;
+    }
 }
