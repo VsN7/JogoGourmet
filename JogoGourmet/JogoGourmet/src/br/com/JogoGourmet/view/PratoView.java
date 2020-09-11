@@ -8,10 +8,10 @@ import br.com.JogoGourmet.controller.PratoController;
  */
 public class PratoView extends javax.swing.JFrame {
     
-    PratoController ac;
+    PratoController pc;
     
     public PratoView() {
-        ac = new PratoController();
+        pc = new PratoController();
         initComponents();
     }
 
@@ -126,6 +126,6 @@ public class PratoView extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 
     public void iniciarJogo(){
-        ac.menuJogo();
+        pc.menuJogo();
     }
 }
