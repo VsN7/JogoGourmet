@@ -47,6 +47,9 @@
         </Property>
         <Property name="toolTipText" type="java.lang.String" value="Jogo Gourmet"/>
       </Properties>
+      <AccessibilityProperties>
+        <Property name="AccessibleContext.accessibleDescription" type="java.lang.String" value="Jogo Gourmet"/>
+      </AccessibilityProperties>
 
       <Layout>
         <DimensionLayout dim="0">

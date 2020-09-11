@@ -2,8 +2,9 @@ package br.com.JogoGourmet.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import javax.swing.JOptionPane;
-import br.com.JogoGourmet.model.Caracteristica;
+import br.com.JogoGourmet.model.Prato;
 /**
  *
  * @author Vitor
@@ -11,60 +12,73 @@ import br.com.JogoGourmet.model.Caracteristica;
 public class PratoController{
     private Object[] options = { "Sim", "Não"};
     private String pratoEscolhido = "";
-    private List<Caracteristica> caracteristicas;
+    private String caracteristica = "";
+    private List<Prato> pratos;
+    private Prato prato;
     private int resposta;
     
     public PratoController(){
-        caracteristicas = new ArrayList<>();
-        adicionarCaracteristica("massa", "lazanha");
+        pratos = new ArrayList<>();
+        pratos.add(new Prato("lasanha", "massa"));
+        prato = new Prato();
     }
     
-    private void adicionarCaracteristica(String caracteristicaPrato, String pratoEscolhido){
-        List<String> pratos = new ArrayList<>();
-        pratos.add(pratoEscolhido);
-        caracteristicas.add(new Caracteristica(caracteristicaPrato, pratos));
+    public void adicionarPrato(String pratoEscolhido, String caracteristica){
+        pratos.add(new Prato(pratoEscolhido.toLowerCase(), caracteristica.toLowerCase()));
+    }
+    
+    public String filtroPratos(String caracteristica){
+        for(Prato prato : pratos){
+            if(prato.getCaracteristica().equals(caracteristica)) {
+                pratoEscolhido = prato.getPrato();
+            }
+        }
+        return "O prato que você pensou é um(a): "+pratoEscolhido+"?";
     }
     
     //Construção das interações entre o algoritimo e o usuário
     
+    public void menuJogo(){
+        this.perguntasRepetidas();
+    }
     
-    public void adicionarPrato(Caracteristica caracteristica, String tipoPrato){
+    public void perguntasPoucoRepetidas(String tipoPrato){
         pratoEscolhido = JOptionPane.showInputDialog("Qual prato você pensou?");
         if(pratoEscolhido == null) {
             System.exit(0);
         }
-        caracteristica.getPratos().add(pratoEscolhido.toLowerCase());
-        this.menuJogo();
+        caracteristica = JOptionPane.showInputDialog(pratoEscolhido+" é _____ mas "+tipoPrato+" não");
+        if(caracteristica == null) {
+            System.exit(0);
+        }
+        adicionarPrato(pratoEscolhido, caracteristica);
+        this.perguntasRepetidas();
     }
     
-    public void menuJogo(){
+    private void perguntasRepetidas(){
         JOptionPane.showMessageDialog(null, "Pense em um prato que gosta", "Aviso", JOptionPane.INFORMATION_MESSAGE, null);
-        for(Caracteristica caracteristica : caracteristicas) {
-            resposta = JOptionPane.showOptionDialog(null, "O prato que você pensou é "+caracteristica.getCaracteristica()+"?" ,"Pergunta ", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE,null, options,options[0]);
-            if(resposta == JOptionPane.YES_OPTION){
-                
-                for(String prato : caracteristica.getPratos()) {
-                    resposta = JOptionPane.showOptionDialog(null, "O prato que você pensou é um(a): "+prato+"?","Pergunta ", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE,null, options,options[0]);
-                    
-                    if(resposta == JOptionPane.YES_OPTION){
-                        JOptionPane.showMessageDialog(null, "Acertei!", "Sucesso", JOptionPane.INFORMATION_MESSAGE, null);
-                        resposta = JOptionPane.showOptionDialog(null, "Quer continuar jogando?","Pergunta ", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE,null, options,options[0]);
-                        if(resposta == JOptionPane.NO_OPTION){
-                            JOptionPane.showMessageDialog(null, "Até logo!", "Tchau", JOptionPane.INFORMATION_MESSAGE, null);
-                            System.exit(0);
-                        }else{
-                            this.menuJogo();
-                        }
-                    } else if (prato.equals(caracteristica.getPratos().get(caracteristica.getPratos().size()-1))){
-                        this.adicionarPrato(caracteristica, prato);
-                    }
-                    
-                }   
-       
-            } else if (caracteristica == caracteristicas.get(caracteristicas.size()-1)){
+        for(Prato prato : pratos) {
+            resposta = JOptionPane.showOptionDialog(null, "O prato que você pensou é "+prato.getCaracteristica()+"?" ,"Pergunta ", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE,null, options,options[0]);
+            if (prato == pratos.get(pratos.size()-1) && resposta == JOptionPane.NO_OPTION){
                 perguntasBoloDeChocolate();
             }
-            
+            if(resposta == JOptionPane.YES_OPTION){
+                resposta = JOptionPane.showOptionDialog(null, "O prato que você pensou é um(a): "+prato.getPrato()+"?","Pergunta ", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE,null, options,options[0]);
+                if(resposta == JOptionPane.YES_OPTION){
+                    JOptionPane.showMessageDialog(null, "Acertei!", "Sucesso", JOptionPane.INFORMATION_MESSAGE, null);
+                    resposta = JOptionPane.showOptionDialog(null, "Quer continuar jogando?","Pergunta ", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE,null, options,options[0]);
+                    if(resposta == JOptionPane.NO_OPTION){
+                        JOptionPane.showMessageDialog(null, "Até logo!", "Tchau", JOptionPane.INFORMATION_MESSAGE, null);
+                        System.exit(0);
+                    }else{
+                        this.perguntasRepetidas();
+                    }
+                } else if (prato == pratos.get(pratos.size()-1)){
+                    this.perguntasPoucoRepetidas(prato.getPrato());
+                }
+            } else if (prato == pratos.get(pratos.size()-1)){
+                perguntasRepetidas();
+            }
         }
     }
     
@@ -77,24 +91,11 @@ public class PratoController{
                 JOptionPane.showMessageDialog(null, "Até logo!", "Tchau", JOptionPane.INFORMATION_MESSAGE, null);
                 System.exit(0);
             }else{
-                this.menuJogo();
+                this.perguntasRepetidas();
             }
         } else {
-            this.adicionarNovaCaracteristica("Bolo De Chocolate");
+            this.perguntasPoucoRepetidas("Bolo De Chocolate");
         }
-    }
-    
-    public void adicionarNovaCaracteristica(String tipoPrato){
-        pratoEscolhido = JOptionPane.showInputDialog("Qual prato você pensou?");
-        if(pratoEscolhido == null) {
-            System.exit(0);
-        }
-        String caracteristicaPrato = JOptionPane.showInputDialog(pratoEscolhido+" é _____ mas "+tipoPrato+" não");
-        if(caracteristicaPrato == null) {
-            System.exit(0);
-        }
-        adicionarCaracteristica(caracteristicaPrato, pratoEscolhido);
-        this.menuJogo();
     }
     
 }
